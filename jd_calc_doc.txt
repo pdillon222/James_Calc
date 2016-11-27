@@ -1,0 +1,198 @@
+Hello cs131A, thank you for giving me the time
+to demonstrate what I have learned about tkinter.
+
+Tkinter is a GUI programming package for Python, it
+is a thin object-oriented layer built on top of Tcl/Tk.
+Tcl/Tk is widely used for GUI programming in other 
+programming languages.
+
+For the final assignment, I took on the task of building
+a simple GUI calculator in tkinter.  Along with the 
+calculator, I decided I could build a tkinter code dialog
+program alongside the calculator code in order to demonstrate
+the code details of the calculator.  [Which you are viewing now].
+
+The left "Green" screen will demonstrate the code from my calculator
+app, and this screen will explain code details, functionality and logic.
+
+Let's begin..
+
+We start by importing all of tkinter's methods [tkinter has many...]
+I decided to use an object oriented approach to build the
+calculator.  This should be perfect for a "calculator" app, as 
+I can create methods that will update the final output value on the 
+calculator's display.
+
+--JamesCalculator()--
+The object james_Calculator will contain all of the operation 
+functions: 
+[addition, subtraction, multiplication, division...]
+Along with some logical operators/placeholders that will need to be 
+updated as we go along.
+--I am initializing the variables:
+    >self.equa
+        - This variable will build and temporarily hold the calc's 
+          input numbers.
+    >self.post_op
+        - This variable will serve as an "event" triggered variable.
+          It will be initialized in the event of an ongoing function
+          requiring summation in the midst of continued calculations.
+    >self.op_list
+        - This list will allow the calc to store two operands and an
+          operator sign.  It will allow the calculator to build an
+          equation, variables will change as needed but the list length 
+          will remain static.
+    
+--Push_num()--
+The function push_num will serve as an operand builder.  It will use 
+some logical tests for various conditions.  The overall goal, is to 
+mimic the input behavior of a simple calculator:
+    -Operand can be either +/-
+    -Operand can have either 0 or 1 decimal points
+    -The function will store and display values as strings, until
+     the final expression is to be evaluated.
+     
+--Push_operator()--
+My model in building this calculator, was in the standard function
+behaviour of a scientific calculator I have on my desk at work.
+Key traits I wanted to model:
+    -The ability to create ongoing functions
+    -The ability to execute sign changes to in-process products
+    -The ability to exectute operator changes to in process functions
+I used a bit of functional programming, as well as some ideas from 
+event driven programming to build the function push_operator().  This
+function will be triggered whenever an operator button is pushed.  
+There is a fair amount of if logic, to determine where in the equation
+the operation currently is and what inputs have been triggered.
+I spent a good deal of time creating if tests and event triggers to 
+allow for wrap-around functions.  Essentially, I wanted the user to be
+allowed to create ongoing functions without having to rely on pressing
+the equal symbol.  I also wanted the user to be allowed to execute an
+operator change in the midst of the operation, without it affecting the
+current product of the equation.
+I drew, and threw away more than a few tree diagrams to figure out how
+to make this work.  The resulting code, is not the cleanest or most concise
+but it works!!...
+
+--Num_logic()--
+Num_logic() is essentially a logic test that directs control flow before
+push_operator is initialized.  It checks to see whether or not the 
+post_op variable has been set to a non-empty value, indicating the fact
+that an ongoing operation is taking place.
+
+--"."--[dot_push()]
+The function dot_push conducts a logical test before entering a decimal into 
+self.equa.  The logical test will only allow for the input of only 1 decimal 
+into self.equa.  
+
+--"+/-"--[sign_change()]
+The function sign_change() is yet another logical test, to allow for sign 
+change of equa or post_op.  Not all calculators with ongoing functionality
+allow for in process product sign-change, but as it happens the calculator
+at my work does.  As such, JamesCalc does as well.
+
+--"C"--[clear_entry()]
+The function clear_entry() will delete the currently entered numerical 
+input [therefore self.equa].  It will not erase the stored variables in
+the self.op_list.
+
+--"AC"--[clear_all()]
+The function clear_all() will reset all variables back to empty.  It 
+therefore sets the calculator back to its initial stage.
+
+--"="--[equals()]
+The function equals() acts as a simple equation summary.  Obviously,
+this function will be triggered when the equal sign button is pushed
+on the calculator.  It uses some logical testing to determine 
+whether or not the equation is ready to be summed.  If not, it waits 
+for the user to complete inputs for the final equation.
+
+That's it as far as calculator functions, and now for the componenents 
+of the GUI display:
+-Tk() is the  tkinter object to be built, I have renamed it root.  This seems
+ to be standard practice, much like naming the initialized object within
+ a class "self"
+-By declaring .resizable to (0,0), the user will not be able to resize the 
+ given shape of the calculator.  Hence it becomes a static window size.
+-I am declaring the root geometry to be the fixed size ("170x275") measured
+ in pixels.
+
+--Frame()--
+A tkinter object comes into being once the Frame class of tkinter is declared,
+with the Tk() object stated as it's master.  That is the first argument in the 
+Frame declaration.  Frame allows the programmer to add some decorations to the 
+GUI.  In this instance, I have set the foreground ["fg"] to grey.  Root.title
+will allow the programmer to set the display name of the tkinter window.
+
+--Label() Vs. Entry()--
+The tkinter StringVar() method allows the user to create a string variable that
+can be used for display purposes in a tkinter label.  For displaying calculator
+output, I have chosen to use the tkinter Label() method.  Label will only display
+output, and will not allow for user input by highlighting the section and entering
+inputs on the user keyboard.  The Entry() method, would be the option to use if 
+the program needed user keyboard input.  For simplicity in fail-safing user input, I
+chose to create the calculator output display with the Label method.  The variable 
+equation will become the display value holder, and I am assigning it to the 
+textvariable argument inside of the Label "calculation".  This will allow the Label
+to have dynamic output. 
+--.grid Vs. .pack--
+Tkinter objects can use either of two geometry managers for configuring placement
+of all objects within a tkinter frame.  Tkinter objects within the frame, are referred
+to as widgets.  All buttons, display and entry spaces are considered widgets.  The two 
+geometry methods are the grid and pack methods.
+--Pack--
+The pack geometry manager, follows similar methodology as that of HTML's "relative" 
+element positioning.  Widgets can be given generalized placement discreetly, but are 
+largely hierarchical and relational to one another.  I chose not to go with this method 
+for my calculator.
+--Grid--
+The grid method, requires explicit declaration through row and column placement.  
+Two widgets can not occupy the same space.  I found this method to be more predictable
+in determining the overall layout of the calculator and its buttons.
+
+I decided to create a separate Label space, to display the current operator sign being 
+used during in process calculations.  This will aid the user, if they wish to change 
+operator signs during an in-process calculation.  Again, I wanted to create functionality
+that would allow the user to change operator signs without terminating the calculation.
+Thus, more drawn and quickly discarded tree diagrams.....!!!
+
+Next, we get into the nuts and bolts of building calculator-like buttons.  For generating
+the numbers, I realized I could use a for loop to populate the calculator board and 
+iterate to determine column and row placement.
+-Notice that the buttons need to be declared within the grid.
+-Also notice that buttons are assigned a command, through a dictionary-like declaration.
+-A command must be assigned a lambda, and a function as a lambda argument.
+
+Since many of the operator buttons are to be function specific, I declared each button
+individually.
+Starting with the division operator.
+
+The multiplication operator.
+
+The subtraction operator.
+
+The decimal point.
+
+The addition operator.
+
+The sign-change operator.
+
+The clear operator.
+
+The clear-all operator.
+
+The equals operator.
+
+The zero operand.
+
+A button for cleanly quitting the GUI, with a simple "Exit" statement as its command.
+
+And finally:
+root.mainloop() will bring the tkinter object into visual space until the user exits.
+--
+--
+And now, shall we see the calculator in action to test it's functionality?
+
+#
+
+#
